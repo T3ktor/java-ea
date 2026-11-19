@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: header('Főoldal')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <!-- Hero szekció -->
+    <div class="p-5 mb-5 card-custom text-center border-0" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155 !important;">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <span class="badge badge-soft-primary px-3 py-2 rounded-pill mb-3">
+                    <i class="bi bi-cpu me-1"></i> Java 25 &bull; Spring Boot &bull; FinTech Platform
+                </span>
+                <h1 class="display-4 fw-bold text-white mb-3">TradePulse Deviza &amp; Forex Portál</h1>
+                <p class="lead text-secondary mb-4">
+                    Komplex pénzügyi és kereskedési információs rendszer, amely integrálja a Magyar Nemzeti Bank hivatalos SOAP árfolyam-webszolgáltatását,
+                    az Oanda nemzetközi Forex v20 kereskedési API-ját, interaktív Chart.js adatvizualizációt és modern Spring Security jogosultságkezelést.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a sec:authorize="isAuthenticated()" th:href="@{/soap/mnb}" class="btn btn-info btn-lg px-4 text-dark fw-semibold">
+                        <i class="bi bi-graph-up me-2"></i>MNB SOAP Árfolyamok
+                    </a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/forex/account}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="bi bi-currency-exchange me-2"></i>Forex Kereskedés
+                    </a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-info btn-lg px-4 text-dark fw-semibold">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Belépés a fiókba
+                    </a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-outline-info btn-lg px-4">
+                        <i class="bi bi-person-plus me-2"></i>Regisztráció
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Funkció Kártyák Grid -->
+    <div class="row g-4 mb-5">
+        <!-- 1. MNB SOAP -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="p-3 rounded-3 bg-primary bg-opacity-25 text-info me-3">
+                            <i class="bi bi-bank fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title text-white mb-0">MNB SOAP Szolgáltatás</h5>
+                            <span class="badge badge-soft-primary">4 Pont</span>
+                        </div>
+                    </div>
+                    <p class="card-text text-secondary">
+                        A Magyar Nemzeti Bank hivatalos SOAP API-jának integrációja. Valós idejű deviza- és dátumszűrés, táblázatos megjelenítés és <strong>Chart.js</strong> interaktív vonaldiagram.
+                    </p>
+                    <a th:href="@{/soap/mnb}" class="btn btn-sm btn-outline-info mt-2">Árfolyamok lekérdezése &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Oanda Forex -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="p-3 rounded-3 bg-warning bg-opacity-25 text-warning me-3">
+                            <i class="bi bi-currency-exchange fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title text-white mb-0">Oanda Forex Kereskedés</h5>
+                            <span class="badge badge-soft-warning">10 Pont</span>
+                        </div>
+                    </div>
+                    <p class="card-text text-secondary">
+                        Élő devizapiaci hozzáférés az Oanda v20 REST API segítségével: számlaadatok, aktuális jegyzések, 10 historikus gyertya, piaci áras Long/Short pozíciónyitás és zárás.
+                    </p>
+                    <a th:href="@{/forex/account}" class="btn btn-sm btn-outline-warning mt-2">Forex modul megnyitása &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Spring Security -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="p-3 rounded-3 bg-danger bg-opacity-25 text-danger me-3">
+                            <i class="bi bi-shield-lock fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title text-white mb-0">Spring Security &amp; H2</h5>
+                            <span class="badge badge-soft-danger">Hitelesítés</span>
+                        </div>
+                    </div>
+                    <p class="card-text text-secondary">
+                        Szerepkör-alapú jogosultságkezelés (Vendég, User, Admin) BCrypt jelszótitkosítással és beépített H2 fájl-adatbázissal (`./data/tradepulse`).
+                    </p>
+                    <a th:href="@{/login}" class="btn btn-sm btn-outline-danger mt-2">Felhasználókezelés &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Kalkulátor & Tesztelés (Bónusz) -->
+        <div class="col-md-6 col-lg-6">
+            <div class="card card-custom h-100 p-3 border-primary">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="p-3 rounded-3 bg-primary bg-opacity-25 text-primary me-3">
+                            <i class="bi bi-check2-circle fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title text-white mb-0">Teszt Menü &amp; 4-műveletes Kalkulátor</h5>
+                            <span class="badge bg-primary">BÓNUSZ +5 PONT</span>
+                        </div>
+                    </div>
+                    <p class="card-text text-secondary">
+                        A tanári jegyzet (8. fejezet) alapján készült webes kalkulátor űrlap, teljes körű <strong>JUnit 5 Unit tesztekkel</strong> (határértékek, túlcsordulás, nullával osztás) és <strong>MockMvc Slice tesztekkel</strong> a webes réteg validálására.
+                    </p>
+                    <a th:href="@{/calc}" class="btn btn-sm btn-primary mt-2">Kalkulátor &amp; Teszt adatok &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. React CRUD (Bónusz) -->
+        <div class="col-md-6 col-lg-6">
+            <div class="card card-custom h-100 p-3 border-success">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="p-3 rounded-3 bg-success bg-opacity-25 text-success me-3">
+                            <i class="bi bi-filetype-jsx fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title text-white mb-0">React + Axios CRUD Modul</h5>
+                            <span class="badge bg-success">BÓNUSZ +5 PONT</span>
+                        </div>
+                    </div>
+                    <p class="card-text text-secondary">
+                        A mellékelt `feladat.sql` adatbázis (`hallgatok` tábla) kezelésére épített reszponzív SPA CRUD alkalmazás React és Axios segítségével. Spring Boot REST API háttérrel és H2 perzisztens tárolással.
+                    </p>
+                    <a th:href="@{/react-crud}" class="btn btn-sm btn-success mt-2">React CRUD indítása &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fejlesztői információs szekció -->
+    <div class="card card-custom p-4">
+        <h4 class="text-info mb-3"><i class="bi bi-people me-2"></i>Projekt információk &amp; Munkamegosztás</h4>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="p-3 rounded-3 bg-dark border border-secondary">
+                    <h6 class="text-white mb-1"><i class="bi bi-person-fill text-info me-2"></i>Elsődleges Fejlesztő</h6>
+                    <p class="mb-1 fw-bold text-light">Kovács Ákos</p>
+                    <p class="mb-1 text-secondary small">Neptun kód: <strong>FIY9TP</strong></p>
+                    <p class="mb-0 text-secondary small">Felelős: Spring Boot alapok, MNB SOAP kliens, Chart.js integráció, Spring Security, JAR csomagolás.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 rounded-3 bg-dark border border-secondary">
+                    <h6 class="text-white mb-1"><i class="bi bi-person-badge text-warning me-2"></i>Projekt Partner (Placeholder szimuláció)</h6>
+                    <p class="mb-1 fw-bold text-light">DevPartner [Egyéni Munka Szimuláció]</p>
+                    <p class="mb-1 text-secondary small">Azonosító: <strong>FIY9TP-MOCK2</strong> (Tanszéki kiírás alapján jóváhagyott)</p>
+                    <p class="mb-0 text-secondary small">Felelős: Oanda Forex modul (Account, Árak, Pozíciók), JUnit/MockMvc Tesztek, React CRUD.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
