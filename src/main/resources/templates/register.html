@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Regisztráció')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <h3 class="card-title text-center text-white mb-4">
+                        <i class="bi bi-person-plus text-info me-2"></i>Új felhasználó regisztrációja
+                    </h3>
+
+                    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
+                    <form th:action="@{/register}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label text-secondary">Felhasználónév</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Válassz felhasználónevet" required minlength="3">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label text-secondary">Jelszó</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Legalább 4 karakter" required minlength="4">
+                        </div>
+                        <div class="mb-4">
+                            <label for="role" class="form-label text-secondary">Szerepkör</label>
+                            <select class="form-select" id="role" name="role">
+                                <option value="USER" selected>USER (Alapértelmezett)</option>
+                                <option value="ADMIN">ADMIN (Adminisztrátori jogok)</option>
+                            </select>
+                            <div class="form-text text-secondary small">A tanári feladathoz mindkét szerepkör tesztelhető.</div>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100 text-dark fw-bold py-2 mb-3">
+                            Regisztráció véglegesítése
+                        </button>
+                    </form>
+
+                    <p class="text-center text-secondary small mb-0">
+                        Van már regisztrált fiókod? <a th:href="@{/login}" class="text-info text-decoration-none">Lépj be itt</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

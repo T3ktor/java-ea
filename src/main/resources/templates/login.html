@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Bejelentkezés')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <h3 class="card-title text-center text-white mb-4">
+                        <i class="bi bi-box-arrow-in-right text-info me-2"></i>Bejelentkezés
+                    </h3>
+
+                    <!-- Értesítések -->
+                    <div th:if="${param.registered}" class="alert alert-success d-flex align-items-center" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <div>Sikeres regisztráció! Most már bejelentkezhetsz.</div>
+                    </div>
+                    <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>Hibás felhasználónév vagy jelszó!</div>
+                    </div>
+                    <div th:if="${param.logout}" class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <div>Sikeresen kijelentkeztél.</div>
+                    </div>
+
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label text-secondary">Felhasználónév</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="pl. user vagy admin" required autofocus>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label text-secondary">Jelszó</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Jelszó" required>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100 text-dark fw-bold py-2 mb-3">
+                            Belépés
+                        </button>
+                    </form>
+
+                    <div class="p-3 rounded-3 bg-dark border border-secondary mb-3 small text-secondary">
+                        <strong class="text-white d-block mb-1">Teszt fiókok az értékeléshez:</strong>
+                        <div>&bull; Admin: <code class="text-info">admin</code> / <code class="text-info">admin123</code></div>
+                        <div>&bull; Felhasználó: <code class="text-info">user</code> / <code class="text-info">user123</code></div>
+                    </div>
+
+                    <p class="text-center text-secondary small mb-0">
+                        Nincs még fiókod? <a th:href="@{/register}" class="text-info text-decoration-none">Regisztrálj itt</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: header('Admin Felület')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="card card-custom p-4 mb-4 border-warning">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-shield-lock-fill fs-2 text-warning me-3"></i>
+                <div>
+                    <h2 class="text-white mb-0">Adminisztrátori Irányítópult</h2>
+                    <span class="badge bg-warning text-dark">ROLE_ADMIN jogosultság szükséges</span>
+                </div>
+            </div>
+            <p class="text-secondary">
+                Ez az oldal kizárólag adminisztrátori jogosultsággal rendelkező felhasználók számára érhető el. A Spring Security védvonal védi.
+            </p>
+            <div class="alert alert-dark border border-secondary" role="alert">
+                <i class="bi bi-info-circle text-info me-2"></i>
+                Bejelentkezett adminisztrátor: <strong class="text-white" sec:authentication="name"></strong>
+            </div>
+
+            <h5 class="text-info mt-4 mb-3">Rendszerfunkciók &amp; Adatbázis elérés</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 bg-dark border border-secondary text-center">
+                        <i class="bi bi-database-check fs-1 text-info mb-2 d-block"></i>
+                        <h6 class="text-white">H2 Webes Adatbázis Konzol</h6>
+                        <p class="text-secondary small">Fájl alapú SQL adatbázis megtekintése böngészőben</p>
+                        <a th:href="@{/h2-console}" target="_blank" class="btn btn-outline-info btn-sm">H2 Konzol megnyitása &rarr;</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 bg-dark border border-secondary text-center">
+                        <i class="bi bi-file-earmark-code fs-1 text-success mb-2 d-block"></i>
+                        <h6 class="text-white">REST API Végpontok</h6>
+                        <p class="text-secondary small">Hallgatói adatok JSON formátumban</p>
+                        <a th:href="@{/api/hallgatok}" target="_blank" class="btn btn-outline-success btn-sm">/api/hallgatok JSON &rarr;</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 bg-dark border border-secondary text-center">
+                        <i class="bi bi-terminal fs-1 text-warning mb-2 d-block"></i>
+                        <h6 class="text-white">Forex Nyitott Pozíciók</h6>
+                        <p class="text-secondary small">Nyers pozíciólita a tanári leírás szerint</p>
+                        <a th:href="@{/positions}" target="_blank" class="btn btn-outline-warning btn-sm">/positions API &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
