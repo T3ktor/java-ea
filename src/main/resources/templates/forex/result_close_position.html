@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Pozíció Zárás Eredmény')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <h3 class="text-white mb-3"><i class="bi bi-check2-circle text-success me-2"></i>Pozíció Zárás Eredmény</h3>
+                    
+                    <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+                        <i class="bi bi-info-circle-fill me-3 fs-3"></i>
+                        <div class="fs-5 font-monospace fw-semibold" th:text="${tradeId}">
+                            Closed tradeId= 931
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/forex/close-position}" class="btn btn-outline-danger">
+                            <i class="bi bi-x-circle me-1"></i>Másik pozíció zárása
+                        </a>
+                        <a th:href="@{/forex/positions}" class="btn btn-outline-info">
+                            <i class="bi bi-list-columns-reverse me-1"></i>Nyitott pozíciók listája
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

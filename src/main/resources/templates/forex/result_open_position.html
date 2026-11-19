@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Pozíció Nyitás Eredmény')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <h3 class="text-white mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Pozíció Sikeresen Megnyitva!</h3>
+                    
+                    <div class="p-3 mb-3 rounded-3 bg-dark border border-secondary">
+                        <span class="text-secondary small d-block mb-1">Instrumentum:</span>
+                        <strong class="text-info fs-5" th:text="${instr}">EUR_USD</strong>
+                    </div>
+
+                    <div class="p-3 mb-3 rounded-3 bg-dark border border-secondary">
+                        <span class="text-secondary small d-block mb-1">Kereskedési egység (Units):</span>
+                        <strong class="fs-5" th:classappend="${units >= 0 ? 'text-success' : 'text-danger'}" th:text="${units} + (units >= 0 ? ' (Long)' : ' (Short)')"></strong>
+                    </div>
+
+                    <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                        <i class="bi bi-receipt me-2 fs-4"></i>
+                        <div>
+                            <strong>Tranzakció azonosító:</strong>
+                            <div class="font-monospace" th:text="${id}">tradeId: 101</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/forex/open-position}" class="btn btn-outline-success">
+                            <i class="bi bi-plus-circle me-1"></i>Újabb pozíció nyitása
+                        </a>
+                        <a th:href="@{/forex/positions}" class="btn btn-info text-dark fw-semibold">
+                            <i class="bi bi-list-columns-reverse me-1"></i>Nyitott pozíciók megtekintése
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
