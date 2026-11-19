@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Historikus Árak Eredmény')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 mb-4">
+                <div class="card-body">
+                    <h3 class="text-white mb-3"><i class="bi bi-clock-history text-warning me-2"></i>Historikus Árak Eredmény</h3>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 bg-dark border border-secondary">
+                                <span class="text-secondary small d-block">Instrumentum:</span>
+                                <strong class="text-info fs-5" th:text="${instr}">EUR_USD</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 bg-dark border border-secondary">
+                                <span class="text-secondary small d-block">Granularity (Felbontás):</span>
+                                <strong class="text-warning fs-5" th:text="${granularity}">D</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="text-light mb-3">Utolsó 10 gyertya záróára (Close price):</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-custom table-hover align-middle mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Időbélyeg (UTC)</th>
+                                    <th class="text-end">Záró árfolyam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="candle, iterStat : ${candles}">
+                                    <td class="text-secondary" th:text="${iterStat.count}"></td>
+                                    <td class="font-monospace text-light" th:text="${#strings.arraySplit(candle, '	')[0]}"></td>
+                                    <td class="text-end font-monospace text-warning fw-bold" th:text="${#strings.arraySplit(candle, '	')[1]}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 rounded-3 bg-dark border border-secondary mb-4">
+                        <span class="text-secondary small d-block mb-1">Nyers formátum (a feladatkiírás szerint):</span>
+                        <pre class="text-secondary font-monospace small mb-0" th:text="${price}"></pre>
+                    </div>
+
+                    <a th:href="@{/forex/hist-prices}" class="btn btn-outline-warning">
+                        <i class="bi bi-arrow-left me-1"></i>Másik időszak / devizapár választása
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

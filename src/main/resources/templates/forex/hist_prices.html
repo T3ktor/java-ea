@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Historikus Árak (HistÁr)')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="p-3 rounded-3 bg-warning bg-opacity-25 text-warning me-3">
+                            <i class="bi bi-clock-history fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white mb-0">Historikus Árak Lekérdezése (HistÁr)</h3>
+                            <p class="text-secondary small mb-0">Válassz ki egy devizapárt és felbontást az utolsó 10 historikus ár kiírásához</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/forex/hist-prices}" th:object="${param}" method="post">
+                        <div class="mb-3">
+                            <label for="instrument" class="form-label text-secondary fw-semibold">Instrumentum</label>
+                            <select class="form-select" id="instrument" th:field="*{instrument}">
+                                <option value="EUR_USD">EUR_USD</option>
+                                <option value="USD_CHF">USD_CHF</option>
+                                <option value="GBP_USD">GBP_USD</option>
+                                <option value="USD_JPY">USD_JPY</option>
+                                <option value="EUR_GBP">EUR_GBP</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="granularity" class="form-label text-secondary fw-semibold">Időbeli felbontás (Granularity)</label>
+                            <select class="form-select" id="granularity" th:field="*{granularity}">
+                                <option value="M1">M1 &mdash; 1 perces</option>
+                                <option value="H1">H1 &mdash; 1 órás</option>
+                                <option value="D" selected>D &mdash; Napi (Daily)</option>
+                                <option value="W">W &mdash; Heti (Weekly)</option>
+                                <option value="M">M &mdash; Havi (Monthly)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 text-dark fw-bold py-2">
+                            <i class="bi bi-list-ol me-1"></i>10 historikus ár megjelenítése
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

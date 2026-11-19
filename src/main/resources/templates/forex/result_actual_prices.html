@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Aktuális Ár Eredmény')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <h3 class="text-white mb-3"><i class="bi bi-check2-circle text-success me-2"></i>Aktuális Piaci Ár Eredmény</h3>
+                    <div class="p-3 mb-4 rounded-3 bg-dark border border-secondary">
+                        <span class="text-secondary small d-block mb-1">Kiválasztott Instrumentum:</span>
+                        <h4 class="text-info fw-bold mb-0" th:text="${instr}">EUR_USD</h4>
+                    </div>
+
+                    <div class="p-3 mb-4 rounded-3 bg-dark border border-secondary">
+                        <span class="text-secondary small d-block mb-1">Oanda API válaszadat:</span>
+                        <div class="text-warning font-monospace small" th:utext="${price}"></div>
+                    </div>
+
+                    <a th:href="@{/forex/actual-prices}" class="btn btn-outline-warning">
+                        <i class="bi bi-arrow-left me-1"></i>Másik instrumentum kiválasztása
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

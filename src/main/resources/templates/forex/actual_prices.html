@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Aktuális Piaci Árak (AktÁr)')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="p-3 rounded-3 bg-warning bg-opacity-25 text-warning me-3">
+                            <i class="bi bi-tag fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white mb-0">Aktuális Piaci Ár Lekérdezése (AktÁr)</h3>
+                            <p class="text-secondary small mb-0">Válassz ki egy devizapárt a valós idejű piaci jegyzés megtekintéséhez</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/forex/actual-prices}" th:object="${par}" method="post">
+                        <div class="mb-4">
+                            <label for="instrument" class="form-label text-secondary fw-semibold">Instrumentum (Devizapár)</label>
+                            <select class="form-select form-select-lg" id="instrument" th:field="*{instrument}">
+                                <option value="EUR_USD">EUR_USD &mdash; Euró / Amerikai Dollár</option>
+                                <option value="USD_CHF">USD_CHF &mdash; Amerikai Dollár / Svájci Frank</option>
+                                <option value="GBP_USD">GBP_USD &mdash; Brit Font / Amerikai Dollár</option>
+                                <option value="USD_JPY">USD_JPY &mdash; Amerikai Dollár / Japán Jen</option>
+                                <option value="EUR_GBP">EUR_GBP &mdash; Euró / Brit Font</option>
+                                <option value="EUR_HUF">EUR_HUF &mdash; Euró / Magyar Forint</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 text-dark fw-bold py-2">
+                            <i class="bi bi-search me-1"></i>Aktuális ár lekérése
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
