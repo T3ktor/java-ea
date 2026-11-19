@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('MNB SOAP Árfolyam Lekérdezés')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-custom p-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="p-3 rounded-3 bg-info bg-opacity-25 text-info me-3">
+                            <i class="bi bi-bank fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white mb-0">Magyar Nemzeti Bank SOAP Kliens</h3>
+                            <p class="text-secondary small mb-0">Hivatalos MNB devizaárfolyamok lekérdezése és Chart.js ábrázolása</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/soap/mnb}" th:object="${messagePrice}" method="post">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label for="currency" class="form-label text-secondary fw-semibold">Devizanem</label>
+                                <select class="form-select" id="currency" th:field="*{currency}">
+                                    <option value="EUR">EUR - Euró</option>
+                                    <option value="USD">USD - Amerikai Dollár</option>
+                                    <option value="GBP">GBP - Brit Font</option>
+                                    <option value="CHF">CHF - Svájci Frank</option>
+                                    <option value="JPY">JPY - Japán Jen (100)</option>
+                                    <option value="CAD">CAD - Kanadai Dollár</option>
+                                    <option value="PLN">PLN - Lengyel Zloty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="startDate" class="form-label text-secondary fw-semibold">Kezdő dátum</label>
+                                <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="endDate" class="form-label text-secondary fw-semibold">Befejező dátum</label>
+                                <input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-secondary small">
+                                <i class="bi bi-info-circle me-1"></i>A lekérdezés a megadott időszakra érvényes hivatalos MNB középárfolyamokat kéri le.
+                            </span>
+                            <button type="submit" class="btn btn-info text-dark fw-bold px-4 py-2">
+                                <i class="bi bi-search me-1"></i>Árfolyamok lekérdezése &amp; Grafikon
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Segédinfó kártya -->
+            <div class="mt-4 p-3 card-custom bg-dark border-secondary">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-secondary small">
+                        <i class="bi bi-file-earmark-code text-info me-1"></i>
+                        Tanári mintafelület (Előadás 36. oldal): <a th:href="@{/exercise}" class="text-info">/exercise</a> &bull; Nyers teszt: <a th:href="@{/feladat1}" class="text-info">/feladat1</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

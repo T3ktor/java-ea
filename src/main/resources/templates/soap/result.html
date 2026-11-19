@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('MNB SOAP Eredmények &amp; Grafikon')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="text-white mb-1">
+                <i class="bi bi-graph-up text-info me-2"></i>MNB Árfolyam Elemzés: <span class="text-info" th:text="${messagePrice.currency} + ' / HUF'"></span>
+            </h2>
+            <p class="text-secondary mb-0">
+                Időszak: <span class="text-light" th:text="${messagePrice.startDate}"></span> &mdash; <span class="text-light" th:text="${messagePrice.endDate}"></span>
+                &bull; Találatok száma: <strong class="text-white" th:text="${#lists.size(items)}"></strong> kereskedési nap
+            </p>
+        </div>
+        <a th:href="@{/soap/mnb}" class="btn btn-outline-info">
+            <i class="bi bi-arrow-left me-1"></i>Új lekérdezés indítása
+        </a>
+    </div>
+
+    <!-- Chart.js Grafikon Kártya (Kötelező feladatelem: 4 pont!) -->
+    <div class="card card-custom p-4 mb-4">
+        <div class="card-header-custom pb-3 mb-3 d-flex justify-content-between align-items-center">
+            <span class="fs-5"><i class="bi bi-pie-chart me-2"></i>Árfolyamgörbe (Chart.js interaktív diagram)</span>
+            <span class="badge badge-soft-primary" th:text="${messagePrice.currency} + ' árfolyama forintban (HUF)'"></span>
+        </div>
+        <div class="card-body">
+            <div style="position: relative; height: 350px; width: 100%;">
+                <canvas id="mnbChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Eredmények Táblázat -->
+    <div class="card card-custom p-4 mb-4">
+        <div class="card-header-custom pb-3 mb-3">
+            <span class="fs-5"><i class="bi bi-table me-2"></i>Lekérdezett devizaárfolyamok listája</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-custom table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Dátum</th>
+                            <th scope="col">Devizapár</th>
+                            <th scope="col">Egység</th>
+                            <th scope="col" class="text-end">Középárfolyam (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${items}">
+                            <td class="fw-semibold text-light" th:text="${item.date}"></td>
+                            <td><span class="badge bg-secondary" th:text="${item.currency} + ' / HUF'"></span></td>
+                            <td th:text="${item.unit}"></td>
+                            <td class="text-end text-info fw-bold fs-6" th:text="${#numbers.formatDecimal(item.rate, 1, 'COMMA', 2, 'POINT')} + ' Ft'"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(items)}">
+                            <td colspan="4" class="text-center text-secondary py-4">
+                                <i class="bi bi-info-circle me-1"></i>A megadott időszakra nem található rögzített jegybanki árfolyam (pl. hétvége vagy ünnepnapok).
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nyers SOAP XML blokk (Dokumentációhoz és ellenőrzéshez) -->
+    <div class="card card-custom p-3 bg-dark">
+        <a class="text-secondary text-decoration-none d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#rawXmlCollapse">
+            <span><i class="bi bi-code-square me-2"></i>Nyers MNB SOAP XML válasz megtekintése</span>
+            <i class="bi bi-chevron-down"></i>
+        </a>
+        <div class="collapse mt-3" id="rawXmlCollapse">
+            <pre class="bg-black p-3 rounded text-info small mb-0" style="max-height: 250px; overflow-y: auto;" th:text="${rawXml}"></pre>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+<!-- Chart.js inicializáló script -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const labels = JSON.parse(/*[[${chartLabelsJson}]]*/ '[]');
+    const dataPoints = JSON.parse(/*[[${chartDataJson}]]*/ '[]');
+    const currencyName = /*[[${messagePrice.currency}]]*/ 'EUR';
+
+    const ctx = document.getElementById('mnbChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
+    gradient.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: currencyName + ' / HUF Középárfolyam',
+                data: dataPoints,
+                borderColor: '#38bdf8',
+                backgroundColor: gradient,
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: '#38bdf8',
+                pointBorderColor: '#0f172a',
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: '#94a3b8', font: { family: 'Inter' } }
+                },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    titleColor: '#38bdf8',
+                    bodyColor: '#f1f5f9',
+                    borderColor: '#334155',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            return ' ' + context.parsed.y.toFixed(2) + ' Ft';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(51, 65, 85, 0.4)' },
+                    ticks: { color: '#94a3b8', maxTicksLimit: 12 }
+                },
+                y: {
+                    grid: { color: 'rgba(51, 65, 85, 0.4)' },
+                    ticks: {
+                        color: '#94a3b8',
+                        callback: function(value) { return value + ' Ft'; }
+                    }
+                }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+</body>
+</html>

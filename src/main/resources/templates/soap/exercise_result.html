@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MNB SOAP Exercise Result</title>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+<h1>Historical prices:</h1>
+<p th:text="'Prices: ' + ${sendOut}"></p>
+<br>
+<a th:href="@{/exercise}">Back to the form</a> &bull; <a th:href="@{/soap/mnb}">TradePulse grafikonos nézet</a>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MNB SOAP Exercise</title>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+<h2>MNB SOAP Exercise (Tanári forma)</h2>
+<form action="#" th:action="@{/exercise}" th:object="${param}" method="post">
+    <label>Deviza: </label>
+    <select name="currencies" th:field="*{currency}">
+        <option value="EUR">EUR</option>
+        <option value="USD">USD</option>
+        <option value="GBP">GBP</option>
+        <option value="JPY">JPY</option>
+        <option value="CHF">CHF</option>
+    </select><br><br>
+    Start date: <input type="date" th:field="*{startDate}"><br><br>
+    End date: <input type="date" th:field="*{endDate}"><br><br>
+    <input type="submit" value="Submit">
+</form>
+<br>
+<a th:href="@{/soap/mnb}">Vissza a TradePulse Chart.js felületre</a>
+</body>
+</html>
