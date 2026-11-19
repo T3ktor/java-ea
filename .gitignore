@@ -1,11 +1,12 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!beadando.jar
+beadando.jar
 .DS_Store
 *.iml
 .idea/
 .vscode/
 data/
-Források/
-Java alkalmazások-Előadás-Beadandó(1)/
+/Forr*
+/Java*
 *.log
+*.trace.db

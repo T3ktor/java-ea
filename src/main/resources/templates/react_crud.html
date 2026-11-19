@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('React CRUD Modul')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="main-content container py-5">
+    <div class="card card-custom p-4 mb-4 border-success">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center">
+                <div class="p-3 rounded-3 bg-success bg-opacity-25 text-success me-3">
+                    <i class="bi bi-filetype-jsx fs-2"></i>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-2">
+                        <h3 class="text-white mb-0">React + Axios CRUD Modul</h3>
+                        <span class="badge bg-success">BÓNUSZ +5 PONT</span>
+                    </div>
+                    <p class="text-secondary small mb-0">Hallgatók adatbázis tábla (`hallgatok`) kezelése H2 perzisztens adatbázissal és Spring REST API-val</p>
+                </div>
+            </div>
+            <a th:href="@{/api/hallgatok}" target="_blank" class="btn btn-outline-success btn-sm">
+                <i class="bi bi-braces me-1"></i>/api/hallgatok JSON API
+            </a>
+        </div>
+    </div>
+
+    <!-- React App Gyökér Konténer -->
+    <div id="react-root">
+        <div class="text-center py-5">
+            <div class="spinner-border text-info" role="status"></div>
+            <p class="text-secondary mt-2">React és Axios komponens betöltése...</p>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+<!-- React 18 és Axios CDN (Production minified) -->
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+
+<!-- React CRUD Alkalmazás Kód -->
+<script>
+    const e = React.createElement;
+    const { useState, useEffect } = React;
+
+    function HallgatoCrudApp() {
+        const [hallgatok, setHallgatok] = useState([]);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
+        const [successMsg, setSuccessMsg] = useState(null);
+        const [search, setSearch] = useState("");
+
+        // Új / Szerkesztendő űrlap állapot
+        const initialForm = {
+            eha: "",
+            vezeteknev: "",
+            keresztnev: "",
+            email: "",
+            szuletesiDatum: "2000-01-01",
+            szakId: 1,
+            osszKreditek: 30
+        };
+        const [formData, setFormData] = useState(initialForm);
+        const [isEditing, setIsEditing] = useState(false);
+
+        // Adatok betöltése Axios segítségével
+        const fetchHallgatok = () => {
+            setLoading(true);
+            axios.get('/api/hallgatok')
+                .then(res => {
+                    setHallgatok(res.data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    setError("Nem sikerült lekérni a hallgatókat: " + (err.response?.data?.message || err.message));
+                    setLoading(false);
+                });
+        };
+
+        useEffect(() => {
+            fetchHallgatok();
+        }, []);
+
+        // Űrlap mező változás
+        const handleChange = (e) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({ ...prev, [name]: value }));
+        };
+
+        // Mentés (Create vagy Update)
+        const handleSubmit = (ev) => {
+            ev.preventDefault();
+            setError(null);
+            setSuccessMsg(null);
+
+            if (isEditing) {
+                // PUT kérés
+                axios.put(`/api/hallgatok/${formData.eha}`, formData)
+                    .then(res => {
+                        setSuccessMsg(`Hallgató (${formData.eha}) sikeresen módosítva!`);
+                        setIsEditing(false);
+                        setFormData(initialForm);
+                        fetchHallgatok();
+                    })
+                    .catch(err => {
+                        setError("Hiba a módosítás során: " + (err.response?.data?.message || err.message));
+                    });
+            } else {
+                // POST kérés
+                axios.post('/api/hallgatok', formData)
+                    .then(res => {
+                        setSuccessMsg(`Új hallgató (${formData.eha}) sikeresen rögzítve!`);
+                        setFormData(initialForm);
+                        fetchHallgatok();
+                    })
+                    .catch(err => {
+                        setError("Hiba a mentés során: " + (err.response?.data?.message || err.message));
+                    });
+            }
+        };
+
+        // Szerkesztés betöltése
+        const handleEdit = (item) => {
+            setFormData(item);
+            setIsEditing(true);
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        };
+
+        // Törlés
+        const handleDelete = (eha) => {
+            if (!confirm(`Biztosan törölni szeretnéd a(z) ${eha} azonosítójú hallgatót?`)) return;
+            setError(null);
+            setSuccessMsg(null);
+
+            axios.delete(`/api/hallgatok/${eha}`)
+                .then(() => {
+                    setSuccessMsg(`Hallgató (${eha}) törölve!`);
+                    fetchHallgatok();
+                })
+                .catch(err => {
+                    setError("Hiba a törlés során: " + (err.response?.data?.message || err.message));
+                });
+        };
+
+        const filteredList = hallgatok.filter(h =>
+            (h.vezeteknev + " " + h.keresztnev + " " + h.eha + " " + h.email).toLowerCase().includes(search.toLowerCase())
+        );
+
+        return e('div', null, [
+            // Értesítések
+            successMsg && e('div', { className: 'alert alert-success d-flex align-items-center mb-4', key: 'succ' }, [
+                e('i', { className: 'bi bi-check-circle-fill me-2 fs-5' }),
+                e('div', null, successMsg)
+            ]),
+            error && e('div', { className: 'alert alert-danger d-flex align-items-center mb-4', key: 'err' }, [
+                e('i', { className: 'bi bi-exclamation-triangle-fill me-2 fs-5' }),
+                e('div', null, error)
+            ]),
+
+            // Űrlap kártya (Create / Edit)
+            e('div', { className: 'card card-custom p-4 mb-4', key: 'formCard' }, [
+                e('div', { className: 'd-flex justify-content-between align-items-center mb-3' }, [
+                    e('h4', { className: 'text-white mb-0' }, [
+                        e('i', { className: `bi ${isEditing ? 'bi-pencil-square text-warning' : 'bi-plus-circle text-success'} me-2` }),
+                        isEditing ? `Hallgató módosítása: ${formData.eha}` : 'Új hallgató felvétele (Create)'
+                    ]),
+                    isEditing && e('button', {
+                        className: 'btn btn-outline-secondary btn-sm',
+                        onClick: () => { setIsEditing(false); setFormData(initialForm); }
+                    }, 'Mégse')
+                ]),
+                e('form', { onSubmit: handleSubmit }, [
+                    e('div', { className: 'row g-3' }, [
+                        e('div', { className: 'col-md-3' }, [
+                            e('label', { className: 'form-label text-secondary small fw-bold' }, 'EHA / Neptun kód'),
+                            e('input', {
+                                type: 'text',
+                                className: 'form-control font-monospace',
+                                name: 'eha',
+                                value: formData.eha,
+                                onChange: handleChange,
+                                disabled: isEditing,
+                                required: true,
+                                placeholder: 'pl. FIY9TP.KEFO'
+                            })
+                        ]),
+                        e('div', { className: 'col-md-3' }, [
+                            e('label', { className: 'form-label text-secondary small fw-bold' }, 'Vezetéknév'),
+                            e('input', {
+                                type: 'text',
+                                className: 'form-control',
+                                name: 'vezeteknev',
+                                value: formData.vezeteknev,
+                                onChange: handleChange,
+                                required: true
+                            })
+                        ]),
+                        e('div', { className: 'col-md-3' }, [
+                            e('label', { className: 'form-label text-secondary small fw-bold' }, 'Keresztnév'),
+                            e('input', {
+                                type: 'text',
+                                className: 'form-control',
+                                name: 'keresztnev',
+                                value: formData.keresztnev,
+                                onChange: handleChange,
+                                required: true
+                            })
+                        ]),
+                        e('div', { className: 'col-md-3' }, [
+                            e('label', { className: 'form-label text-secondary small fw-bold' }, 'Email cím'),
+                            e('input', {
+                                type: 'email',
+                                className: 'form-control',
+                                name: 'email',
+                                value: formData.email,
+                                onChange: handleChange,
+                                required: true
+                            })
+                        ]),
+                        e('div', { className: 'col-md-4' }, [
+                            e('label', { className: 'form-label text-secondary small fw-bold' }, 'Születési dátum'),
+                            e('input', {
+                                type: 'date',
+                                className: 'form-control',
+                                name: 'szuletesiDatum',
+                                value: formData.szuletesiDatum,
+                                onChange: handleChange,
+                                required: true
+                            })
+                        ]),
+                        e('div', { className: 'col-md-4' }, [
+                            e('label', { className: 'form-label text-secondary small fw-bold' }, 'Szak azonosító (SzakId)'),
+                            e('input', {
+                                type: 'number',
+                                className: 'form-control',
+                                name: 'szakId',
+                                value: formData.szakId,
+                                onChange: handleChange,
+                                min: 1,
+                                required: true
+                            })
+                        ]),
+                        e('div', { className: 'col-md-4' }, [
+                            e('label', { className: 'form-label text-secondary small fw-bold' }, 'Összes kredit'),
+                            e('input', {
+                                type: 'number',
+                                className: 'form-control',
+                                name: 'osszKreditek',
+                                value: formData.osszKreditek,
+                                onChange: handleChange,
+                                min: 0,
+                                required: true
+                            })
+                        ])
+                    ]),
+                    e('div', { className: 'mt-4 d-flex justify-content-end' }, [
+                        e('button', {
+                            type: 'submit',
+                            className: `btn ${isEditing ? 'btn-warning text-dark' : 'btn-success text-dark'} fw-bold px-4`
+                        }, [
+                            e('i', { className: 'bi bi-check-lg me-1' }),
+                            isEditing ? 'Módosítás mentése (Update)' : 'Hallgató hozzáadása (Create)'
+                        ])
+                    ])
+                ])
+            ]),
+
+            // Hallgatók Táblázat Kártya (Read / Delete)
+            e('div', { className: 'card card-custom p-4', key: 'listCard' }, [
+                e('div', { className: 'd-flex justify-content-between align-items-center mb-3 flex-wrap gap-2' }, [
+                    e('h4', { className: 'text-white mb-0' }, [
+                        e('i', { className: 'bi bi-table text-info me-2' }),
+                        `Hallgatók listája (${filteredList.length} fő)`
+                    ]),
+                    e('div', { className: 'd-flex gap-2' }, [
+                        e('input', {
+                            type: 'text',
+                            className: 'form-control form-control-sm',
+                            placeholder: 'Keresés név vagy EHA alapján...',
+                            value: search,
+                            onChange: (e) => setSearch(e.target.value),
+                            style: { width: '250px' }
+                        }),
+                        e('button', {
+                            className: 'btn btn-outline-info btn-sm',
+                            onClick: fetchHallgatok
+                        }, [e('i', { className: 'bi bi-arrow-clockwise me-1' }), 'Frissítés'])
+                    ])
+                ]),
+                loading ? e('div', { className: 'text-center py-4' }, [
+                    e('div', { className: 'spinner-border text-info' })
+                ]) : e('div', { className: 'table-responsive' }, [
+                    e('table', { className: 'table table-custom table-hover align-middle mb-0' }, [
+                        e('thead', { className: 'table-dark' }, [
+                            e('tr', null, [
+                                e('th', null, 'EHA Kód'),
+                                e('th', null, 'Név'),
+                                e('th', null, 'Email'),
+                                e('th', null, 'Születési dátum'),
+                                e('th', null, 'SzakId'),
+                                e('th', { className: 'text-end' }, 'Kreditek'),
+                                e('th', { className: 'text-center' }, 'Műveletek')
+                            ])
+                        ]),
+                        e('tbody', null, filteredList.map(h =>
+                            e('tr', { key: h.eha }, [
+                                e('td', { className: 'font-monospace text-info fw-bold' }, h.eha),
+                                e('td', { className: 'fw-semibold text-light' }, `${h.vezeteknev} ${h.keresztnev}`),
+                                e('td', { className: 'text-secondary small' }, h.email),
+                                e('td', { className: 'text-secondary small' }, h.szuletesiDatum),
+                                e('td', null, e('span', { className: 'badge bg-secondary' }, `Szak #${h.szakId}`)),
+                                e('td', { className: 'text-end fw-bold text-success' }, `${h.osszKreditek} kr`),
+                                e('td', { className: 'text-center' }, [
+                                    e('button', {
+                                        className: 'btn btn-outline-warning btn-sm me-2',
+                                        onClick: () => handleEdit(h),
+                                        title: 'Szerkesztés'
+                                    }, [e('i', { className: 'bi bi-pencil' })]),
+                                    e('button', {
+                                        className: 'btn btn-outline-danger btn-sm',
+                                        onClick: () => handleDelete(h.eha),
+                                        title: 'Törlés'
+                                    }, [e('i', { className: 'bi bi-trash' })])
+                                ])
+                            ])
+                        ))
+                    ])
+                ])
+            ])
+        ]);
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('react-root'));
+    root.render(React.createElement(HallgatoCrudApp));
+</script>
+
+</body>
+</html>
